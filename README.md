@@ -8,6 +8,150 @@ Today, you'll dive into the world of intelligent agent systems powered by Azure 
 
 Transform insurance claims processing into an AI-native, enterprise-ready system using Microsoft Foundry and the Model Context Protocol. This hackathon uniquely combines three cutting-edge approaches: **compare multiple AI document processing techniques** (GPT-4.1-mini vision, Mistral Document AI, and Azure Document Intelligence) to learn when to use each based on cost and accuracy; **build with the next-generation Microsoft Foundry platform** (ai.azure.com) featuring integrated vectorization, continuous evaluation, and OpenTelemetry tracing for the complete GenAIOps lifecycle; **deploy as an MCP server** through Azure API Management, making your multi-agent workflow accessible to GitHub Copilot, Claude Desktop, and other AI assistants; and **build a user-friendly web interface** using Streamlit to complete the end-to-end solution. From vectorized search foundations through intelligent agent orchestration to AI-native deployment and user interfaces, you'll master the full stack of enterprise AI development—building systems that are observable, scalable, secure, and seamlessly integrated with the broader AI ecosystem.
 
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    subgraph Challenge0["Challenge 0: Environment Setup"]
+        GH[GitHub Codespaces]
+        ARM[Azure ARM Template]
+        ENV[Environment Variables]
+        
+        GH --> ARM
+        ARM --> AzureRes
+        ARM --> ENV
+        
+        subgraph AzureRes["Azure Resources"]
+            FOUNDRY[Microsoft Foundry<br/>ai.azure.com]
+            SEARCH[Azure AI Search]
+            BLOB[Azure Blob Storage]
+            INSIGHTS[Application Insights]
+            ACR[Azure Container Registry]
+            ACA[Azure Container Apps]
+        end
+    end
+
+    subgraph Challenge1["Challenge 1: Document Processing & Vectorized Search"]
+        subgraph DataSources["Insurance Data"]
+            CLAIMS[Crash Images<br/>crash1-5.jpg]
+            POLICIES[Policy Documents<br/>5 markdown files]
+            STATEMENTS[Claim Statements<br/>Front & Back images]
+        end
+        
+        subgraph Processing["Document Processing Options"]
+            GPT4["GPT-4.1-mini<br/>Multimodal Vision"]
+            MISTRAL["Mistral Document AI<br/>Fast OCR"]
+            DOCINT["Azure Document<br/>Intelligence"]
+        end
+        
+        DataSources --> Processing
+        Processing --> VECTOR["Vectorized<br/>Knowledge Base"]
+        VECTOR --> SEARCH
+        BLOB --> DataSources
+    end
+
+    subgraph Challenge2["Challenge 2: AI Agents"]
+        subgraph OCRAgent["OCR Agent"]
+            OCR_IN[Image Input]
+            OCR_MISTRAL[Mistral Document AI]
+            OCR_OUT[Extracted Text JSON]
+            
+            OCR_IN --> OCR_MISTRAL --> OCR_OUT
+        end
+        
+        subgraph JSONAgent["JSON Structuring Agent"]
+            JSON_IN[OCR Text Input]
+            JSON_GPT[GPT-4.1-mini]
+            JSON_OUT[Structured Claim JSON]
+            
+            JSON_IN --> JSON_GPT --> JSON_OUT
+        end
+        
+        subgraph AgentTools["Agent Tools"]
+            TOOL1[Image Text Extraction]
+            TOOL2[Policy Document Parser]
+            TOOL3[Claim Amount Validation]
+            TOOL4[Policy Coverage Assessment]
+        end
+        
+        FOUNDRY --> OCRAgent
+        FOUNDRY --> JSONAgent
+        OCRAgent --> JSONAgent
+    end
+
+    subgraph Challenge3["Challenge 3: Observability & Monitoring"]
+        subgraph Tracing["OpenTelemetry Tracing"]
+            SPANS[Spans - Tool Calls]
+            TRACES[Traces - Full Journey]
+            ATTRS[Attributes & Metadata]
+        end
+        
+        subgraph Evaluation["Continuous Evaluation"]
+            PREEVAL[Pre-Production Testing]
+            POSTEVAL[Post-Production Monitoring]
+            REDTEAM[AI Red Teaming]
+        end
+        
+        subgraph Alerts["Alerting System"]
+            QUALITY[Quality Metrics]
+            SAFETY[Safety Metrics]
+            FEEDBACK[User Feedback]
+        end
+        
+        OCRAgent --> Tracing
+        JSONAgent --> Tracing
+        Tracing --> INSIGHTS
+        Evaluation --> INSIGHTS
+    end
+
+    subgraph Challenge4["Challenge 4: Multi-Agent Workflow & API"]
+        subgraph Orchestrator["Workflow Orchestrator"]
+            WF_START([Claim Image])
+            WF_OCR[Step 1: OCR Agent]
+            WF_JSON[Step 2: JSON Agent]
+            WF_END([Structured Data])
+            
+            WF_START --> WF_OCR --> WF_JSON --> WF_END
+        end
+        
+        subgraph RESTAPI["FastAPI Server"]
+            EP_HEALTH["/health"]
+            EP_UPLOAD["/process-claim/upload"]
+            EP_BASE64["/process-claim/base64"]
+        end
+        
+        subgraph Deployment["Cloud Deployment"]
+            DOCKER[Docker Container]
+            ACA_DEPLOY[Azure Container Apps]
+        end
+        
+        Orchestrator --> RESTAPI
+        RESTAPI --> DOCKER --> ACA_DEPLOY
+    end
+
+    subgraph Challenge5["Challenge 5: Web UI"]
+        STREAMLIT[Streamlit App<br/>localhost:8501]
+        UPLOAD[File Upload]
+        PREVIEW[Image Preview]
+        RESULTS[Structured Results Display]
+        
+        UPLOAD --> STREAMLIT
+        STREAMLIT --> PREVIEW
+        STREAMLIT --> RESULTS
+    end
+
+    %% Cross-challenge connections
+    Challenge0 --> Challenge1
+    Challenge1 --> Challenge2
+    Challenge2 --> Challenge3
+    Challenge2 --> Challenge4
+    Challenge4 --> Challenge5
+    
+    %% API Integration
+    STREAMLIT -->|"HTTP POST"| EP_UPLOAD
+    EP_UPLOAD -->|"Response JSON"| RESULTS
+```
+
 ## Learning Objectives 🎯
 
 By participating in this hackathon, you will learn how to:
@@ -27,6 +171,11 @@ To successfully complete this hackathon, you will need the following:
 - Be familiar with Generative AI Solutions and Azure Services. 
 - An active Azure subscription, with Owner rights. 
 - Ability to provision resources in **Sweden Central** or [another supported region](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/models?tabs=global-standard%2Cstandard-chat-completions#global-standard-model-availability). 
+
+
+
+## Arquitetura
+
 
 ## Challenges
 
