@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# Project-generated artifacts
+challenge-2/ocr_results/
+challenge-1/scripts/processed_documents_for_vectorization.json
+challenge-1/scripts/simplified_crash_reports.json
+
+# Frontend (if built separately / not meant to be in this repo)
+claims-ui/

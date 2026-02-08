@@ -9,6 +9,12 @@ Usage:
 Example:
     python ocr_agent.py /path/to/image.jpg
 """
+from pathlib import Path
+# Always resolve output relative to repo root
+REPO_ROOT = Path(__file__).resolve().parents[2]
+OCR_RESULTS_DIR = REPO_ROOT / "challenge-2" / "ocr_results"
+OCR_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
 import os
 import sys
 import base64
@@ -232,8 +238,9 @@ def main():
         test_image_path = sys.argv[1] if len(sys.argv) > 1 else "/workspaces/claims-processing-hack/challenge-0/data/statements/crash1_front.jpeg"
         
         # Create output directory for OCR results
-        output_dir = "/workspaces/claims-processing-hack/challenge-2/ocr_results"
-        os.makedirs(output_dir, exist_ok=True)
+        # Create output directory for OCR results (always relative to repo root)
+        output_dir = OCR_RESULTS_DIR
+
         
         # Create AI Project Client
         project_client = AIProjectClient(
@@ -315,9 +322,10 @@ Provide a summary of what text was found and what it represents."""
                         
                         # Save OCR result to JSON file
                         base_name = os.path.splitext(os.path.basename(test_image_path))[0]
-                        output_file = os.path.join(output_dir, f"{base_name}_ocr_result.json")
+                        output_file = output_dir / f"{base_name}_ocr_result.json"
+
                         
-                        with open(output_file, 'w') as f:
+                        with open(output_file, "w", encoding="utf-8") as f:
                             ocr_data = json.loads(ocr_result_json)
                             json.dump(ocr_data, f, indent=2)
                         
